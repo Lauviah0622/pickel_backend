@@ -1,9 +1,16 @@
 const express = require('express');
 const db = require('./models');
+require('dotenv').config()
 
 
 const  app = express();
-const port = process.env.PORT || 5001;
+const env =  process.env.NODE_ENV;
+
+const portEnvVar = {
+    production: process.env.PORT_PROD,
+    test: process.env.PORT_TEST
+}
+const port = portEnvVar[env] || 5001;
 
 db.User.create({
     name: 'test'
