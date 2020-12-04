@@ -3,10 +3,27 @@
   "version": "0.0.1",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "test": "jest",
+    "deploy:prod": "NODE_ENV=production npm install && pm2 start npm -- run start",
+    "deploy:test": "NODE_ENV=test  npm install || SET \"NODE_ENV=test\" npm install && npm run testDB && pm2 start npm -- run start",
+    "testDB": "npx sequelize-cli db:migrate:undo && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+    "start": "node app.js",
+    "lint": "./node_modules/.bin/eslint ."
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "eslintConfig": {},
   "dependencies": {
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mysql2": "^2.2.5",
     "nodemon": "^2.0.6",
+    "sequelize": "^6.3.5",
     "sequelize-cli": "^6.2.0"
   },
   "devDependencies": {
@@ -23,5 +40,4 @@
     "lint-staged": "^10.5.2",
     "prettier": "^2.2.1"
   }
-
 }
