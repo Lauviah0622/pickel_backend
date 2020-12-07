@@ -8,28 +8,32 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      
+      name: {
+        allowNull: false,
+        type: Sequelize.STRING,
+        defaultValue: ''
+      },
+      launcher: {
+        type: Sequelize.STRING
+      },
+      description: {
+        allowNull: true,
+        type: Sequelize.TEXT
+      },
       pickStart: {
         type: Sequelize.DATE
       },
       pickEnd: {
         type: Sequelize.DATE
       },
-      name: {
-        allowNull: false,
-        type: Sequelize.STRING,
-        defaultValue: ''
-      },
-      description: {
-        allowNull: true,
-        type: Sequelize.TEXT
-      },
       duration: {
         allowNull: false,        
         type: Sequelize.INTEGER,
         defaultValue: 1
       },
-      launcher: {
-        type: Sequelize.STRING
+      determineTime: {
+        type: Sequelize.DATE
       },
       eventType: {
         type: Sequelize.ENUM('part', 'allday'),

@@ -24,7 +24,8 @@ module.exports = (sequelize, DataTypes) => {
     launcher: DataTypes.STRING,
     eventType: DataTypes.ENUM('part', 'allday'),
     eventSuffix: DataTypes.STRING,
-    pickSuffix: DataTypes.STRING
+    pickSuffix: DataTypes.STRING,
+    determineTime: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Event',
