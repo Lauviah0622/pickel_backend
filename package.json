@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "test": "jest",
-    "start": "NODE_ENV=development node app.js",
+    "start": " node app.js",
     "lint": "./node_modules/.bin/eslint .",
     "deploy:prod": "NODE_ENV=production npm install && NODE_ENV=production pm2 start npm --name pickel-backend -- run start",
     "deploy:test": "NODE_ENV=production npm install && NODE_ENV=test npm run testDB && NODE_ENV=test pm2 start npm --name pickel-backend-test -- run start",

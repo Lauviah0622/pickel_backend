@@ -1,5 +1,7 @@
+
 const express = require('express');
-// const db = require('./models');
+// eslint-disable-next-line
+const db = require('./models'); 
 require('dotenv').config()
 
 
@@ -13,13 +15,6 @@ const portEnvVar = {
 const port = portEnvVar[env] || 5001;
 
 // DB test
-// db.User.findAll()
-// .then(data => {
-//     console.log(data);
-// }).catch(err => {
-//     console.log(err);
-// })
-
 
 app.get('/', function test(req, res) {
     res.send('test gogogogo')

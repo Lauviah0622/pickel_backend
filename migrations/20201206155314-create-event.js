@@ -9,7 +9,10 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       pickStart: {
-        type: Sequelize.TIME
+        type: Sequelize.DATE
+      },
+      pickEnd: {
+        type: Sequelize.DATE
       },
       name: {
         allowNull: false,

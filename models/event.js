@@ -10,11 +10,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      Event.hasMany(models.Range)
+      Event.hasMany(models.Pick)
       // define association here
     }
   };
   Event.init({
-    pickStart: DataTypes.TIME,
+    pickStart: DataTypes.DATE,
+    pickEnd: DataTypes.DATE,
     name: DataTypes.STRING,
     description: DataTypes.TEXT,
     duration: DataTypes.INTEGER,

@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.DATE
       },
       priority: {
-        type: Sequelize.ENUM('1', '2', '3')
+        type: Sequelize.ENUM(1, 2, 3)
       },
       createdAt: {
         allowNull: false,

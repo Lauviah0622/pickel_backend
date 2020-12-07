@@ -6,14 +6,14 @@ module.exports = {
       await queryInterface.addConstraint("Ranges", {
         fields: ["eventId"],
         type: "foreign key",
-        // name: "Ranges_eventId_fk_constraint",
+        name: "Ranges_eventId_fk_constraint",
         references: {
           //Required field
           table: "Events",
           field: "id",
         },
-        // onDelete: "cascade",
-        // onUpdate: "cascade",
+        onDelete: "cascade",
+        onUpdate: "cascade",
       });
 
       await queryInterface.addConstraint("Picks", {
@@ -54,15 +54,23 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    // await queryInterface.removeConstraint(
-    //   "Ranges",
-    //   "Ranges_eventId_fk_constraint"
-    // );
-    // await queryInterface.removeConstraint("Picks", "Pick_eventId_fk_constraint");
-    // await queryInterface.removeConstraint(
-    //   "Period",
-    //   "Period_pickId_fk_constraint"
-    // );
+    try  {
+      await queryInterface.removeConstraint(
+        "Ranges",
+        "Ranges_eventId_fk_constraint"
+      );
+      await queryInterface.removeConstraint(
+        "Picks",
+        "Pick_eventId_fk_constraint"
+      );
+      await queryInterface.removeConstraint(
+        "Period",
+        "Period_pickId_fk_constraint"
+      );
+
+    } catch(err) {
+      console.log('20201207042642-add-fk-constraint', err);
+    }
     /**
      * Add reverting commands here.
      *

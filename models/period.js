@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      Period.belongsTo(models.Event)
       // define association here
     }
   };
@@ -18,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     pickId: DataTypes.INTEGER,
     start: DataTypes.DATE,
     end: DataTypes.DATE,
-    priority: DataTypes.ENUM('1', '2', '3')
+    priority: DataTypes.ENUM(1, 2, 3)
   }, {
     sequelize,
     modelName: 'Period',
