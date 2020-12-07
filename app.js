@@ -1,5 +1,5 @@
 const express = require('express');
-const db = require('./models');
+// const db = require('./models');
 require('dotenv').config()
 
 
@@ -12,16 +12,13 @@ const portEnvVar = {
 }
 const port = portEnvVar[env] || 5001;
 
-db.User.create({
-    name: 'test'
-}).then(() => {
-    return db.User.findAll()
-
-}).then(data => {
-    console.log(data);
-}).catch(err => {
-    console.log(err);
-})
+// DB test
+// db.User.findAll()
+// .then(data => {
+//     console.log(data);
+// }).catch(err => {
+//     console.log(err);
+// })
 
 
 app.get('/', function test(req, res) {
@@ -31,8 +28,7 @@ app.get('/', function test(req, res) {
 
 app.listen(port, () => {
     
-    console.log(`Example app listening at http://localhost:${port}`);
+    // console.log(`Example app listening at http://localhost:${port}`);
 })
-
 
 
