@@ -54,23 +54,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    try  {
-      await queryInterface.removeConstraint(
-        "Ranges",
-        "Ranges_eventId_fk_constraint"
-      );
-      await queryInterface.removeConstraint(
-        "Picks",
-        "Pick_eventId_fk_constraint"
-      );
-      await queryInterface.removeConstraint(
-        "Period",
-        "Period_pickId_fk_constraint"
-      );
-
-    } catch(err) {
-      console.log('20201207042642-add-fk-constraint', err);
-    }
     /**
      * Add reverting commands here.
      *
