@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Range.belongsTo(models.Pick)
+      Range.belongsTo(models.Event, {foreignKey: 'eventId'})
 
       // define association here
     }

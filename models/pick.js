@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Pick.belongsTo(models.Event);
-      Pick.hasMany(models.Range);
+      Pick.hasMany(models.Period);
       // define association here
     }
   }

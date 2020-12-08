@@ -65,22 +65,19 @@ const eventController = {
         req.body.ranges.map((range) => {
           return Range.create({
             eventId: event.dataValues.id,
-            start: range[0],
-            end: range[1],
+            start: range.start,
+            end: range.end,
           });
         })
       );
       const eventData = omit(event.dataValues, ["createdAt", "updatedAt"]);
-      eventData.ranges = ranges.map((range) => [
-        range.dataValues.start,
-        range.dataValues.end,
-      ]);
+      eventData.ranges = ranges.map((range) => ({start: range.start, end: range.end}));
 
       const json = {
         event: eventData,
         token: createJwtToken(event.dataValues.id, "launcher"),
       };
-      
+
       sendRes(res, true, json);
     } catch (err) {
       sendRes(res, false, err.errors);
@@ -91,10 +88,18 @@ const eventController = {
   getEvent: async (req, res) => {
     try {
       const eventSuffix = req.params.suffix;
-      const event = await Event.findOne({ where: { eventSuffix } });
+      const event = await Event.findOne({
+        where: { eventSuffix },
+        include: [{model: Range, as: 'ranges'}],
+      });
       if (!event) throw Error("no event form suffix");
+      const resEventData = omit(event.dataValues, ["createdAt", "updatedAt"]);
+      resEventData.ranges = resEventData.ranges.map((range) => ({
+        start: range.start,
+        end: range.end,
+      }));
       const json = {
-        event: event.dataValues,
+        event: resEventData,
         token: createJwtToken(event.dataValues.id, "launcher"),
       };
 

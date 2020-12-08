@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Event.hasMany(models.Range)
-      Event.hasMany(models.Pick)
+      Event.hasMany(models.Range, {foreignKey: 'eventId', as: 'ranges'})
+      Event.hasMany(models.Pick, {foreignKey: 'eventId', as: 'picks'})
       // define association here
     }
   };
