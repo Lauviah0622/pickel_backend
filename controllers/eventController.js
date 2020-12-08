@@ -1,13 +1,13 @@
 const omit = require("lodash/omit");
 const jwt = require("jsonwebtoken");
 const { Event, Range, sequelize } = require("../models");
-const { sendRes } = require("./utils");
+const { sendRes, createSendError,createJWTToken } = require("./utils");
 
 /**
  * getSuffixes
  * @returns {[string, string]} two token created by timestamp
  */
-function getSuffixes() {
+function createSuffixes() {
   const ALPHA = "AIRMBPQNKF34SZ2C0ED8X5WU76LHGT9YOVJ1";
   const BETA = "15f4qa76lzhx0i89oumbgjcedrn2tpsvwky3";
   function encode(timestamp) {
@@ -30,27 +30,11 @@ function getSuffixes() {
   return suffixes;
 }
 
-function createJwtToken(id, status) {
-  return jwt.sign(
-    {
-      id,
-      status,
-      exp: Math.floor(Date.now() / 1000) + 60 * 60,
-    },
-    process.env.SIGNATURE
-  );
-}
-
-function createSendError (message) {
-  const err = Error(message);
-  err.send = true
-  return err
-}
 
 const eventController = {
   createEvent: async (req, res) => {
     try {
-      const [eventSuffix, pickSuffix] = getSuffixes();
+      const [eventSuffix, pickSuffix] = createSuffixes();
       const event = await Event.create(
         {
           pickStart: req.body.pickStart,
@@ -65,7 +49,7 @@ const eventController = {
         },
         { returning: true }
       );
-      if (!event) throw createSendError('no event form suffix')
+      if (!event) throw createSendError('no event form url')
 
       const ranges = await Promise.all(
         req.body.ranges.map((range) => {
@@ -84,7 +68,7 @@ const eventController = {
 
       const json = {
         event: eventData,
-        token: createJwtToken(event.dataValues.id, "launcher"),
+        token: createJWTToken(event.dataValues.id, "launcher"),
       };
 
       sendRes(res, true, json);
@@ -100,7 +84,7 @@ const eventController = {
         where: { eventSuffix },
         include: [{ model: Range, as: "ranges" }],
       });
-      if (!event) throw createSendError("no event form suffix");
+      if (!event) throw createSendError("no event form url");
       const resEventData = omit(event.dataValues, ["createdAt", "updatedAt"]);
       resEventData.ranges = resEventData.ranges.map((range) => ({
         start: range.start,
@@ -108,7 +92,7 @@ const eventController = {
       }));
       const json = {
         event: resEventData,
-        token: createJwtToken(event.dataValues.id, "launcher"),
+        token: createJWTToken(event.dataValues.id, "launcher"),
       };
 
       sendRes(res, true, json);
@@ -128,7 +112,7 @@ const eventController = {
       const eventSuffix = req.params.suffix;
       const event = await Event.findOne({ where: { eventSuffix } });
 
-      if (!event) throw createSendError(true, "no event form suffix");
+      if (!event) throw createSendError(true, "no event form url");
 
       if (decodedToken.id !== event.dataValues.id)
         throw createSendError("incompatible id");

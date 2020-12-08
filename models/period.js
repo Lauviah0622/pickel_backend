@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Period.init({
-    name: DataTypes.STRING,
+    description: DataTypes.TEXT,
     pickId: DataTypes.INTEGER,
     start: DataTypes.DATE,
     end: DataTypes.DATE,
