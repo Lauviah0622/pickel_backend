@@ -30,7 +30,7 @@ function getSuffixes() {
   return suffixes;
 }
 
-function createJwtToken (id, status) {
+function createJwtToken(id, status) {
   return jwt.sign(
     {
       id,
@@ -60,12 +60,14 @@ const eventController = {
         { returning: true }
       );
 
-      const json = { 
+      const json = {
         event: event.dataValues,
-        token: createJwtToken(event.dataValues.id, "launcher")
+        token: createJwtToken(event.dataValues.id, "launcher"),
       };
       sendRes(res, true, json);
     } catch (err) {
+      sendRes(res, false, err.errors);
+
       console.log(err.errors);
     }
   },
@@ -73,16 +75,41 @@ const eventController = {
     try {
       const eventSuffix = req.params.suffix;
       const event = await Event.findOne({ where: { eventSuffix } });
-
-      const json = { 
+      if (!event) throw Error("no event form suffix");
+      const json = {
         event: event.dataValues,
-        token: createJwtToken(event.dataValues.id, "launcher")
+        token: createJwtToken(event.dataValues.id, "launcher"),
       };
 
-      sendRes(res, true, json)
-
+      sendRes(res, true, json);
     } catch (err) {
+      sendRes(res, false, err.message);
       console.log(err);
+    }
+  },
+  updateEvent: async (req, res) => {
+    try {
+      const token = req.get("Authorization").split(" ")[1];
+      const decodedToken = jwt.verify(token, process.env.SIGNATURE);
+      if (!decodedToken) throw Error('invalid token')
+      if (decodedToken.status !== "launcher")
+        throw Error("incompatible status");
+
+      const eventSuffix = req.params.suffix;
+      const event = await Event.findOne({ where: { eventSuffix } });
+      if (!event) throw Error("no event form suffix");
+
+      if (decodedToken.id !== event.dataValues.id)
+        throw Error("incompatible id");
+
+      const updatedEvent = await event.update({ ...req.body });
+      const json = {
+        event: updatedEvent.dataValues
+      };
+
+      sendRes(res, true, json);
+    } catch (err) {
+      sendRes(res, false, err.message);
     }
   },
 };

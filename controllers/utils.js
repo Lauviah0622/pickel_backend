@@ -13,7 +13,7 @@ function sendRes (res, ok, payload) {
         res.end()
         
     } else {
-        res.send({
+        res.status(400).send({
             ok: false,
             message: payload
         })
