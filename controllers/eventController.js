@@ -1,6 +1,6 @@
 const omit = require("lodash/omit");
 const jwt = require("jsonwebtoken");
-const { Event, Range } = require("../models");
+const { Event, Range, sequelize } = require("../models");
 const { sendRes } = require("./utils");
 
 /**
@@ -42,6 +42,12 @@ function createJwtToken(id, status) {
   );
 }
 
+function createResError (send, message) {
+  const err = Error(message);
+  err.send = send
+  return err
+}
+
 const eventController = {
   createEvent: async (req, res) => {
     try {
@@ -71,7 +77,10 @@ const eventController = {
         })
       );
       const eventData = omit(event.dataValues, ["createdAt", "updatedAt"]);
-      eventData.ranges = ranges.map((range) => ({start: range.start, end: range.end}));
+      eventData.ranges = ranges.map((range) => ({
+        start: range.start,
+        end: range.end,
+      }));
 
       const json = {
         event: eventData,
@@ -81,7 +90,6 @@ const eventController = {
       sendRes(res, true, json);
     } catch (err) {
       sendRes(res, false, err.errors);
-
       console.log(err.errors);
     }
   },
@@ -90,7 +98,7 @@ const eventController = {
       const eventSuffix = req.params.suffix;
       const event = await Event.findOne({
         where: { eventSuffix },
-        include: [{model: Range, as: 'ranges'}],
+        include: [{ model: Range, as: "ranges" }],
       });
       if (!event) throw Error("no event form suffix");
       const resEventData = omit(event.dataValues, ["createdAt", "updatedAt"]);
@@ -119,19 +127,48 @@ const eventController = {
 
       const eventSuffix = req.params.suffix;
       const event = await Event.findOne({ where: { eventSuffix } });
-      if (!event) throw Error("no event form suffix");
+
+      if (!event) throw createResError(true, "no event form suffix");
 
       if (decodedToken.id !== event.dataValues.id)
         throw Error("incompatible id");
 
-      const updatedEvent = await event.update({ ...req.body });
-      const json = {
-        event: updatedEvent.dataValues,
-      };
+      const eventData = await sequelize.transaction(async (t) => {
+        const updatedEvent = await event.update(
+          { ...req.body },
+          { transaction: t }
+        );
+        const ranges = await Promise.all(
+          req.body.ranges.map(async (range) => {
+            await Range.destroy(
+              { where: { eventId: event.dataValues.id } },
+              { transaction: t }
+            );
+            return Range.create(
+              {
+                eventId: event.dataValues.id,
+                start: range.start,
+                end: range.end,
+              },
+              { transaction: t }
+            );
+          })
+        );
+        const updatedEventData = omit(updatedEvent.dataValues, [
+          "createdAt",
+          "updatedAt",
+        ]);
+        updatedEventData.ranges = ranges.map((range) => ({
+          start: range.start,
+          end: range.end,
+        }));
+        return updatedEventData;
+      });
 
-      sendRes(res, true, json);
+      sendRes(res, true, {event: eventData});
     } catch (err) {
-      sendRes(res, false, err.message);
+        sendRes(res, false, err.send ? err.message : 'update fail');
+      console.log(err);
     }
   },
 };
