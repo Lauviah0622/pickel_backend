@@ -1,5 +1,6 @@
+const omit = require("lodash/omit");
 const jwt = require("jsonwebtoken");
-const { Event } = require("../models");
+const { Event, Range } = require("../models");
 const { sendRes } = require("./utils");
 
 /**
@@ -60,10 +61,26 @@ const eventController = {
         { returning: true }
       );
 
+      const ranges = await Promise.all(
+        req.body.ranges.map((range) => {
+          return Range.create({
+            eventId: event.dataValues.id,
+            start: range[0],
+            end: range[1],
+          });
+        })
+      );
+      const eventData = omit(event.dataValues, ["createdAt", "updatedAt"]);
+      eventData.ranges = ranges.map((range) => [
+        range.dataValues.start,
+        range.dataValues.end,
+      ]);
+
       const json = {
-        event: event.dataValues,
+        event: eventData,
         token: createJwtToken(event.dataValues.id, "launcher"),
       };
+      
       sendRes(res, true, json);
     } catch (err) {
       sendRes(res, false, err.errors);
@@ -91,7 +108,7 @@ const eventController = {
     try {
       const token = req.get("Authorization").split(" ")[1];
       const decodedToken = jwt.verify(token, process.env.SIGNATURE);
-      if (!decodedToken) throw Error('invalid token')
+      if (!decodedToken) throw Error("invalid token");
       if (decodedToken.status !== "launcher")
         throw Error("incompatible status");
 
@@ -104,7 +121,7 @@ const eventController = {
 
       const updatedEvent = await event.update({ ...req.body });
       const json = {
-        event: updatedEvent.dataValues
+        event: updatedEvent.dataValues,
       };
 
       sendRes(res, true, json);
