@@ -5,8 +5,7 @@ const { sendRes } = require("./utils");
 
 /**
  * getSuffixes
- * @returns {[string, string]} two token by timestamp
- *
+ * @returns {[string, string]} two token created by timestamp
  */
 function getSuffixes() {
   const ALPHA = "AIRMBPQNKF34SZ2C0ED8X5WU76LHGT9YOVJ1";
@@ -42,9 +41,9 @@ function createJwtToken(id, status) {
   );
 }
 
-function createResError (send, message) {
+function createSendError (message) {
   const err = Error(message);
-  err.send = send
+  err.send = true
   return err
 }
 
@@ -66,6 +65,7 @@ const eventController = {
         },
         { returning: true }
       );
+      if (!event) throw createSendError('no event form suffix')
 
       const ranges = await Promise.all(
         req.body.ranges.map((range) => {
@@ -100,7 +100,7 @@ const eventController = {
         where: { eventSuffix },
         include: [{ model: Range, as: "ranges" }],
       });
-      if (!event) throw Error("no event form suffix");
+      if (!event) throw createSendError("no event form suffix");
       const resEventData = omit(event.dataValues, ["createdAt", "updatedAt"]);
       resEventData.ranges = resEventData.ranges.map((range) => ({
         start: range.start,
@@ -121,17 +121,17 @@ const eventController = {
     try {
       const token = req.get("Authorization").split(" ")[1];
       const decodedToken = jwt.verify(token, process.env.SIGNATURE);
-      if (!decodedToken) throw Error("invalid token");
+      if (!decodedToken) throw createSendError("invalid token");
       if (decodedToken.status !== "launcher")
-        throw Error("incompatible status");
+        throw createSendError("incompatible status");
 
       const eventSuffix = req.params.suffix;
       const event = await Event.findOne({ where: { eventSuffix } });
 
-      if (!event) throw createResError(true, "no event form suffix");
+      if (!event) throw createSendError(true, "no event form suffix");
 
       if (decodedToken.id !== event.dataValues.id)
-        throw Error("incompatible id");
+        throw createSendError("incompatible id");
 
       const eventData = await sequelize.transaction(async (t) => {
         const updatedEvent = await event.update(
