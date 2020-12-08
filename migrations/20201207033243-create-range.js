@@ -10,12 +10,15 @@ module.exports = {
       },
       eventId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
       },
       start: {
         type: Sequelize.DATE,
+        allowNull: false,
       },
       end: {
         type: Sequelize.DATE,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,

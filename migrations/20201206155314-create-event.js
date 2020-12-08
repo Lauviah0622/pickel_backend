@@ -22,10 +22,12 @@ module.exports = {
         type: Sequelize.TEXT
       },
       pickStart: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false,
       },
       pickEnd: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false,
       },
       duration: {
         allowNull: false,        
@@ -40,10 +42,12 @@ module.exports = {
         defaultValue: 'part'
       },
       eventSuffix: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       pickSuffix: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
