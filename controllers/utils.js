@@ -27,16 +27,20 @@ function createSendError(message) {
   return err;
 }
 
+
 function createJWTToken(id, status) {
+  const VALID_TIME = 60 * 60
   return jwt.sign(
     {
       id,
       status,
-      exp: Math.floor(Date.now() / 1000) + 60 * 60,
+      exp: Math.floor(Date.now() / 1000) + VALID_TIME,
     },
     process.env.SIGNATURE
   );
 }
+
+
 
 module.exports = {
   sendRes,

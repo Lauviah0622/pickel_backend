@@ -151,8 +151,10 @@ const eventController = {
 
       sendRes(res, true, {event: eventData});
     } catch (err) {
+      if (err.name === 'TokenExpiredError') {
+        sendRes(res, false, 'token expired');
+      }
         sendRes(res, false, err.send ? err.message : 'update fail');
-      console.log(err);
     }
   },
 };

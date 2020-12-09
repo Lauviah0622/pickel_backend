@@ -36,7 +36,6 @@ const pickController = {
   },
   createPick: async (req, res) => {
     try {
-        console.log('123123123');
       const token = req.get("Authorization").split(" ")[1];
       const decodedToken = jwt.verify(token, process.env.SIGNATURE);
       if (!decodedToken) throw createSendError("invalid token");
@@ -44,7 +43,6 @@ const pickController = {
         throw createSendError("incompatible status");
 
       const pickSuffix = req.params.suffix;
-
       const pickingEvent = await Event.findOne({
         where: { pickSuffix },
         raw: true,
@@ -55,7 +53,6 @@ const pickController = {
         throw createSendError("incompatible id");
       }
       
-      //   return
       const eventId = decodedToken.id;
 
       const pickData = await sequelize.transaction(async (t) => {
@@ -73,7 +70,6 @@ const pickController = {
             return Period.create({ ...period, pickId }, { transaction: t, raw: true });
           })
         );
-        // console.log();
         const completePickData = pick(createdPick.dataValues, [
           "eventId",
           "name",
@@ -93,6 +89,9 @@ const pickController = {
         pick: pickData,
       });
     } catch (err) {
+      if (err.name === 'TokenExpiredError') {
+        sendRes(res, false, 'token expired');
+      }
       sendRes(res, false, err.errors);
       console.log(err);
     }
