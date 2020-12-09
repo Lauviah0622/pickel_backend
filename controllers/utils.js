@@ -27,9 +27,8 @@ function createSendError(message) {
   return err;
 }
 
-
 function createJWTToken(id, status) {
-  const VALID_TIME = 60 * 60
+  const VALID_TIME = 60 * 60;
   return jwt.sign(
     {
       id,
@@ -40,10 +39,24 @@ function createJWTToken(id, status) {
   );
 }
 
-
+function getEventState(event) {
+  switch (true) {
+    case event.determineTime instanceof Date:
+      return "determined";
+    case event.pickEnd < Date.now():
+      return "endPicking";
+    case event.pickEnd > Date.now() && event.pickStart < Date.now():
+      return "picking";
+    case event.pickStart > Date.now():
+      return "setting";
+    default:
+      return "inavid Event"
+  }
+}
 
 module.exports = {
   sendRes,
   createSendError,
-  createJWTToken
+  createJWTToken,
+  getEventState,
 };

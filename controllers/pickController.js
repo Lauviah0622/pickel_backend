@@ -3,7 +3,7 @@ const pick = require("lodash/pick");
 const jwt = require("jsonwebtoken");
 
 const { Event, Pick, Range, sequelize, Period } = require("../models");
-const { sendRes, createSendError, createJWTToken } = require("./utils");
+const { sendRes, createSendError, createJWTToken, getEventState } = require("./utils");
 
 const pickController = {
   getPickingEvent: async (req, res) => {
@@ -14,6 +14,8 @@ const pickController = {
         include: [{ model: Range, as: "ranges" }],
       });
       if (!event) throw createSendError("no event from url");
+      if (getEventState(event.dataValues) !== 'picking') throw createSendError("not picking event")
+
       const resEventData = omit(event.dataValues, [
         "createdAt",
         "updatedAt",
@@ -82,9 +84,9 @@ const pickController = {
             "pickId",
           ]);
         });
-        // console.log(completePickData);
         return completePickData;
       });
+
       sendRes(res, true, {
         pick: pickData,
       });
