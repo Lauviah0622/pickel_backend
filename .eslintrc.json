@@ -7,5 +7,5 @@
   "plugins": ["prettier"],
   "parser": "babel-eslint",
   "rules": {},
-  "ignorePatterns": ["migrations/", "models/", "seeds/"]
+  "ignorePatterns": ["migrations/", "models/", "seeders/"]
 }
