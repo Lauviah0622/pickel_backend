@@ -39,12 +39,12 @@ module.exports = {
      await insertPick(queryInterface, 'Peter', eventId, [
       {
         start: createRelativeDate(5, 13),
-        end: createRelativeDate(5, 16),
+        duration: 3,
         priority: 3,
       },
       {
         start: createRelativeDate(5, 16),
-        end: createRelativeDate(5, 18),
+        duration: 2,
         priority: 2,
       }
      ])
@@ -52,17 +52,17 @@ module.exports = {
      await insertPick(queryInterface, 'May', eventId, [
       {
         start: createRelativeDate(5, 13),
-        end: createRelativeDate(5, 17),
+        duration: 4,
         priority: 2,
       },
       {
         start: createRelativeDate(6, 17),
-        end: createRelativeDate(6, 18),
+        duration: 1,
         priority: 1,
       },
       {
         start: createRelativeDate(7, 16),
-        end: createRelativeDate(7, 18),
+        duration: 2,
         priority: 3,
       }
      ])
@@ -70,17 +70,17 @@ module.exports = {
      await insertPick(queryInterface, 'Jay', eventId, [
       {
         start: createRelativeDate(5, 13),
-        end: createRelativeDate(5, 16),
+        duration: 3,
         priority: 3,
       },
       {
         start: createRelativeDate(6, 13),
-        end: createRelativeDate(6, 15),
+        duration: 2,
         priority: 2,
       },
       {
         start: createRelativeDate(6, 16),
-        end: createRelativeDate(6, 18),
+        duration: 2,
         priority: 1,
       }
      ])

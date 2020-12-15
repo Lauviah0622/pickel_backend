@@ -19,9 +19,10 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
       },
-      end: {
-        type: Sequelize.DATE,
-        allowNull: false,
+      duration: {
+        allowNull: false,        
+        type: Sequelize.INTEGER,
+        defaultValue: 1
       },
       priority: {
         type: Sequelize.ENUM('1', '2', '3')
