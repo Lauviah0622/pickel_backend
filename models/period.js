@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     description: DataTypes.TEXT,
     pickId: DataTypes.INTEGER,
     start: DataTypes.DATE,
-    end: DataTypes.DATE,
+    duration: DataTypes.INTEGER,
     priority: DataTypes.ENUM('1', '2', '3')
   }, {
     sequelize,
