@@ -1,5 +1,6 @@
 
 const express = require('express');
+const cors = require('cors')
 const bodyParser = require('body-parser');
 // eslint-disable-next-line
 const db = require('./models'); 
@@ -8,6 +9,7 @@ require('dotenv').config()
 
 
 const  app = express();
+app.use(cors())
 
 const env =  process.env.NODE_ENV;
 const portEnvVar = {
@@ -15,7 +17,6 @@ const portEnvVar = {
     test: process.env.PORT_TEST
 }
 const port = portEnvVar[env] || 5001;
-
 
 app.use(bodyParser.json()) // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })) 

@@ -49,8 +49,10 @@ const eventController = {
         },
         { returning: true }
       );
-      if (!event) throw createSendError('no event form url')
+      if (!event) throw createSendError('no event form url');
 
+      if (!req.body.ranges || req.body.ranges.length < 1) throw createSendError('no ranges');
+      
       const ranges = await Promise.all(
         req.body.ranges.map((range) => {
           return Range.create({
@@ -73,8 +75,8 @@ const eventController = {
 
       sendRes(res, true, json);
     } catch (err) {
-      sendRes(res, false, err.errors);
-      console.log(err.errors);
+      sendRes(res, false, err.send ? err.message : 'create event fail');
+      console.log(err.message);
     }
   },
   getEvent: async (req, res) => {
