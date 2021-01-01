@@ -15,8 +15,8 @@ const dayjs = require("dayjs");
  * @return {Date} params
  */
 function createRelativeDate(dayOffset, hour) {
-  if (hour) return dayjs().add(dayOffset, "day").hour(hour).toDate();
-  return dayjs().add(dayOffset, "day").toDate();
+  if (hour) return dayjs().add(dayOffset, "day").hour(hour).minute(0).toDate();
+  return dayjs().add(dayOffset, "day").minute(0).toDate();
 }
 
 const formatDate = (date) => dayjs(date).format("M/DD HH:mm");

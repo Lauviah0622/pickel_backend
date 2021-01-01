@@ -1,4 +1,7 @@
 'use strict';
+
+const {TABLE_CHARSET} = require('../utils');
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Periods', {
@@ -37,8 +40,8 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
-    });
-   
+    },
+    TABLE_CHARSET)
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('Periods');
