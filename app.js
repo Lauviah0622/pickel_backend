@@ -12,6 +12,7 @@ const  app = express();
 app.use(cors())
 
 const env =  process.env.NODE_ENV;
+console.log('enviroment: ', env);
 const portEnvVar = {
     production: process.env.PORT_PROD,
     test: process.env.PORT_TEST
