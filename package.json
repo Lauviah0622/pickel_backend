@@ -8,7 +8,7 @@
     "start": "nodemon app.js",
     "lint": "./node_modules/.bin/eslint .",
     "deploy:prod": "NODE_ENV=production npm install && NODE_ENV=production pm2 start npm --name pickel-backend -- run start",
-    "deploy:test": "NODE_ENV=production npm install && NODE_ENV=test npm run testDB && NODE_ENV=test pm2 start npm --name pickel-backend-test -- run start",
+    "deploy:test": "NODE_ENV=test pm2 start app.js --name pickel-backend-test",
     "resetDB": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
   },
   "husky": {
