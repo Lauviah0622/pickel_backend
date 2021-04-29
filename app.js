@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors')
 const bodyParser = require('body-parser');
 // eslint-disable-next-line
-const db = require('./models'); 
+
 
 require('dotenv').config()
 
@@ -21,10 +21,6 @@ const port = portEnvVar[env] || 5001;
 
 app.use(bodyParser.json()) // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })) 
-
-app.get('/', function test(req, res) {
-    res.send('test gogogogo')
-})
 
 // use all routers
 require('./routers')(app);
